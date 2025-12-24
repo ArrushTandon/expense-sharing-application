@@ -5,16 +5,16 @@ A robust backend system for managing shared expenses among groups, similar to Sp
 ## 📋 Table of Contents
 
 - [About the Project](https://github.com/ArrushTandon/expense-sharing-application?tab=readme-ov-file#-about-the-project)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Architecture](#architecture)
-- [Getting Started](#getting-started)
-- [API Documentation](#api-documentation)
-- [Database Schema](#database-schema)
-- [Key Algorithms](#key-algorithms)
-- [Testing](#testing)
-- [Known Limitations](#known-limitations)
-- [Future Enhancements](#future-enhancements)
+- [Features](https://github.com/ArrushTandon/expense-sharing-application?tab=readme-ov-file#-features)
+- [Tech Stack](https://github.com/ArrushTandon/expense-sharing-application?tab=readme-ov-file#%EF%B8%8F-tech-stack)
+- [Architecture](https://github.com/ArrushTandon/expense-sharing-application?tab=readme-ov-file#%EF%B8%8F-architecture)
+- [Getting Started](https://github.com/ArrushTandon/expense-sharing-application?tab=readme-ov-file#-getting-started)
+- [API Documentation](https://github.com/ArrushTandon/expense-sharing-application?tab=readme-ov-file#-api-documentation)
+- [Database Schema](https://github.com/ArrushTandon/expense-sharing-application?tab=readme-ov-file#%EF%B8%8F-database-schema)
+- [Key Algorithms](https://github.com/ArrushTandon/expense-sharing-application?tab=readme-ov-file#-key-algorithms)
+- [Testing](https://github.com/ArrushTandon/expense-sharing-application?tab=readme-ov-file#-testing)
+- [Known Limitations](https://github.com/ArrushTandon/expense-sharing-application?tab=readme-ov-file#%EF%B8%8F-known-limitations)
+- [Future Enhancements](https://github.com/ArrushTandon/expense-sharing-application?tab=readme-ov-file#-future-enhancements)
 
 ## 🎯 About the Project
 
@@ -458,7 +458,7 @@ This project is part of an educational assignment and is open for learning purpo
 
 **Your Name**
 - GitHub: [ArrushTandon](https://github.com/ArrushTandon)
-- Email: [arrush6674@gmail.com](arrush6674@gmail.com)
+- Email: [Contact Me](https://formspree.io/f/maqwzvby)
 
 ## 🙏 Acknowledgments
 
