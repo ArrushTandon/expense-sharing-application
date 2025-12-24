@@ -4,7 +4,7 @@ A robust backend system for managing shared expenses among groups, similar to Sp
 
 ## 📋 Table of Contents
 
-- [About the Project](#about-the-project)
+- [About the Project](https://github.com/ArrushTandon/expense-sharing-application?tab=readme-ov-file#-about-the-project)
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Architecture](#architecture)
