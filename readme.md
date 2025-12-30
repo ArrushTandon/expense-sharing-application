@@ -456,7 +456,7 @@ This project is part of an educational assignment and is open for learning purpo
 
 ## 👤 Author
 
-**Your Name**
+**Arrush Tandon**
 - GitHub: [ArrushTandon](https://github.com/ArrushTandon)
 - Email: [Contact Me](https://formspree.io/f/maqwzvby)
 
