@@ -4,11 +4,14 @@ import com.expensesharing.dto.request.CreateExpenseRequest;
 import com.expensesharing.dto.response.ExpenseResponse;
 import com.expensesharing.entity.*;
 import com.expensesharing.exception.ResourceNotFoundException;
+import com.expensesharing.exception.UnauthorizedException;
 import com.expensesharing.repository.ExpenseRepository;
+import com.expensesharing.repository.GroupMemberRepository;
 import com.expensesharing.repository.GroupRepository;
 import com.expensesharing.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -23,9 +26,18 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
+    private final GroupMemberRepository groupMemberRepository;
     private final SplitCalculator splitCalculator;
 
-    public ExpenseResponse createExpense(CreateExpenseRequest request) {
+    public ExpenseResponse createExpense(CreateExpenseRequest request, Authentication authentication) {
+        User requestingUser = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        // Check if user is a member of the group
+        if (!isMemberOfGroup(request.getGroupId(), requestingUser.getId()) && requestingUser.getRole() != Role.ADMIN) {
+            throw new UnauthorizedException("You are not a member of this group");
+        }
+
         Group group = groupRepository.findById(request.getGroupId())
                 .orElseThrow(() -> new ResourceNotFoundException("Group not found"));
 
@@ -82,17 +94,40 @@ public class ExpenseService {
         };
     }
 
-    public List<ExpenseResponse> getGroupExpenses(UUID groupId, Pageable pageable) {
+    public List<ExpenseResponse> getGroupExpenses(UUID groupId, Pageable pageable, Authentication authentication) {
+        User requestingUser = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        // Check if user is a member of the group
+        if (!isMemberOfGroup(groupId, requestingUser.getId()) && requestingUser.getRole() != Role.ADMIN) {
+            throw new UnauthorizedException("You are not a member of this group");
+        }
+
         return expenseRepository.findByGroupId(groupId, pageable)
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
-    public ExpenseResponse getExpense(UUID expenseId) {
+    public ExpenseResponse getExpense(UUID expenseId, Authentication authentication) {
+        User requestingUser = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
         Expense expense = expenseRepository.findById(expenseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Expense not found"));
+
+        // Check if user is a member of the group
+        if (!isMemberOfGroup(expense.getGroup().getId(), requestingUser.getId()) && requestingUser.getRole() != Role.ADMIN) {
+            throw new UnauthorizedException("You are not a member of this group");
+        }
+
         return mapToResponse(expense);
+    }
+
+    private boolean isMemberOfGroup(UUID groupId, UUID userId) {
+        return groupMemberRepository.findByGroupIdAndUserId(groupId, userId)
+                .map(GroupMember::getIsActive)
+                .orElse(false);
     }
 
     private ExpenseResponse mapToResponse(Expense expense) {

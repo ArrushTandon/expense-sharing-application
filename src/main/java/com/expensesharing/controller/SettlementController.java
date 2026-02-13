@@ -1,7 +1,7 @@
 package com.expensesharing.controller;
 
 import com.expensesharing.dto.request.CreateSettlementRequest;
-import com.expensesharing.entity.Settlement;
+import com.expensesharing.dto.response.SettlementResponse;
 import com.expensesharing.service.SettlementService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +17,8 @@ public class SettlementController {
     private final SettlementService settlementService;
 
     @PostMapping
-    public ResponseEntity<Settlement> createSettlement(@Valid @RequestBody CreateSettlementRequest request) {
-        Settlement settlement = settlementService.createSettlement(request);
+    public ResponseEntity<SettlementResponse> createSettlement(@Valid @RequestBody CreateSettlementRequest request) {
+        SettlementResponse settlement = settlementService.createSettlement(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(settlement);
     }
 }

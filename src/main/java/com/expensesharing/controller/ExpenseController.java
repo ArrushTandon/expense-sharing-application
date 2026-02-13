@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
@@ -23,9 +24,10 @@ public class ExpenseController {
     @PostMapping
     public ResponseEntity<ExpenseResponse> createExpense(
             @PathVariable UUID groupId,
-            @Valid @RequestBody CreateExpenseRequest request) {
+            @Valid @RequestBody CreateExpenseRequest request,
+            Authentication authentication) {
         request.setGroupId(groupId);
-        ExpenseResponse response = expenseService.createExpense(request);
+        ExpenseResponse response = expenseService.createExpense(request, authentication);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -33,10 +35,12 @@ public class ExpenseController {
     public ResponseEntity<List<ExpenseResponse>> getGroupExpenses(
             @PathVariable UUID groupId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(defaultValue = "20") int size,
+            Authentication authentication) {
         List<ExpenseResponse> expenses = expenseService.getGroupExpenses(
                 groupId,
-                PageRequest.of(page, size, Sort.by("createdAt").descending())
+                PageRequest.of(page, size, Sort.by("createdAt").descending()),
+                authentication
         );
         return ResponseEntity.ok(expenses);
     }
@@ -44,8 +48,9 @@ public class ExpenseController {
     @GetMapping("/{expenseId}")
     public ResponseEntity<ExpenseResponse> getExpense(
             @PathVariable UUID groupId,
-            @PathVariable UUID expenseId) {
-        ExpenseResponse expense = expenseService.getExpense(expenseId);
+            @PathVariable UUID expenseId,
+            Authentication authentication) {
+        ExpenseResponse expense = expenseService.getExpense(expenseId, authentication);
         return ResponseEntity.ok(expense);
     }
 }

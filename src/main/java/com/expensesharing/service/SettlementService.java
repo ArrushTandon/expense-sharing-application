@@ -1,6 +1,7 @@
 package com.expensesharing.service;
 
 import com.expensesharing.dto.request.CreateSettlementRequest;
+import com.expensesharing.dto.response.SettlementResponse;
 import com.expensesharing.entity.Group;
 import com.expensesharing.entity.Settlement;
 import com.expensesharing.entity.User;
@@ -22,7 +23,7 @@ public class SettlementService {
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
 
-    public Settlement createSettlement(CreateSettlementRequest request) {
+    public SettlementResponse createSettlement(CreateSettlementRequest request) {
         Group group = groupRepository.findById(request.getGroupId())
                 .orElseThrow(() -> new ResourceNotFoundException("Group not found"));
 
@@ -39,6 +40,24 @@ public class SettlementService {
         settlement.setAmount(request.getAmount());
         settlement.setNote(request.getNote());
 
-        return settlementRepository.save(settlement);
+        Settlement savedSettlement = settlementRepository.save(settlement);
+
+        // Return DTO instead of entity to avoid circular reference
+        return mapToResponse(savedSettlement);
+    }
+
+    private SettlementResponse mapToResponse(Settlement settlement) {
+        return SettlementResponse.builder()
+                .id(settlement.getId())
+                .groupId(settlement.getGroup().getId())
+                .groupName(settlement.getGroup().getName())
+                .fromUserId(settlement.getFromUser().getId())
+                .fromUserName(settlement.getFromUser().getName())
+                .toUserId(settlement.getToUser().getId())
+                .toUserName(settlement.getToUser().getName())
+                .amount(settlement.getAmount())
+                .settledAt(settlement.getSettledAt())
+                .note(settlement.getNote())
+                .build();
     }
 }

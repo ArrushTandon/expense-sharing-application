@@ -1,3 +1,31 @@
+#spring:
+#  application:
+#    name: expense-sharing-app
+
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/expensesharing
+#    username: postgres
+#    password: user123
+#    driver-class-name: org.postgresql.Driver
+
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.PostgreSQLDialect
+#        format_sql: true
+
+#server:
+#  port: 8080
+
+#management:
+#  health:
+#    redis:
+#      enabled: false
+
+
 spring:
   application:
     name: expense-sharing-app
@@ -19,6 +47,11 @@ spring:
 
 server:
   port: 8080
+
+# JWT Configuration
+jwt:
+  secret: mySecretKeyForJWTTokenGenerationThatIsAtLeast256BitsLongForHS256Algorithm
+  expiration: 86400000  # 24 hours in milliseconds
 
 management:
   health:

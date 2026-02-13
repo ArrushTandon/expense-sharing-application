@@ -2,10 +2,13 @@ package com.expensesharing.service;
 
 import com.expensesharing.dto.request.CreateUserRequest;
 import com.expensesharing.dto.response.UserResponse;
+import com.expensesharing.entity.Role;
 import com.expensesharing.entity.User;
 import com.expensesharing.exception.ResourceNotFoundException;
+import com.expensesharing.exception.UnauthorizedException;
 import com.expensesharing.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,10 +36,26 @@ public class UserService {
         return mapToResponse(savedUser);
     }
 
-    public UserResponse getUser(UUID userId) {
+    public UserResponse getUser(UUID userId, Authentication authentication) {
+        User requestingUser = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        // Only allow users to see their own details OR admins to see anyone's details
+        if (!requestingUser.getId().equals(userId) && requestingUser.getRole() != Role.ADMIN) {
+            throw new UnauthorizedException("You can only view your own profile");
+        }
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return mapToResponse(user);
+    }
+
+    public List<UserResponse> getAllUsers() {
+        // This method is now protected by @PreAuthorize("hasRole('ADMIN')") in controller
+        return userRepository.findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
     private UserResponse mapToResponse(User user) {
@@ -48,12 +67,4 @@ public class UserService {
                 .createdAt(user.getCreatedAt())
                 .build();
     }
-
-    public List<UserResponse> getAllUsers() {
-        return userRepository.findAll()
-                .stream()
-                .map(this::mapToResponse)
-                .toList();
-    }
-
 }
